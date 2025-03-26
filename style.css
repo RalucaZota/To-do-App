@@ -20,7 +20,7 @@ h1 {
     gap: 10px;
 }
 
-.add-task {
+.add-task, .remove-task {
     height: 55px;
     width: 100px;
     border: 1px solid grey;

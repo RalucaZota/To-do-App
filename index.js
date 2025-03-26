@@ -1,11 +1,13 @@
 const input = document.querySelector('input');
-const addTaskButton = document.querySelector('add-task');
-const tasksParent = document.createElement('ol');
-tasksParent.classList.add('tasks-parent');
+const addTaskButton = document.querySelector('.add-task');
+const tasksParent = document.querySelector('.tasks-parent');
 const tasksList = [];
 let idCounter;
+let task;
 let newTask;
+let checkboxInput;
 let removeTaskButton;
+let isChecked = false;
 
 const updateValue = (event) => {
   input.value = event.target.value;
@@ -18,23 +20,12 @@ const addTask = () => {
   idCounter = localStorage.getItem('idCounter') ? parseInt(localStorage.getItem('idCounter')) : 0;
   idCounter++
   localStorage.setItem('idCounter', JSON.stringify(idCounter));
-  const task = { value: input.value, id: idCounter };
+  task = { value: input.value, id: idCounter, checked: isChecked };
   tasksList.push(task);
-  console.log('idCounter', idCounter);
+  console.log('task.value', task.value);
 
   setTaskToLocalStorage();
-
-  newTask = document.createElement('li');
-  newTask.setAttribute('id', task.id);
-  tasksParent.appendChild(newTask);
-  newTask.innerHTML = task.value;
-  console.log('task.id', task.id);
-
-  const removeTaskButton = document.createElement('button');
-  removeTaskButton.innerHTML = 'Remove task';
-  removeTaskButton.addEventListener('click', () => removeTask(task.id));
-  newTask.appendChild(removeTaskButton);
-
+  createTask();
   cleanInput();
 };
 
@@ -48,16 +39,16 @@ const handleEnterKey = (event) => {
   }
 };
 
-const removeTask = (id) => {
-  const taskId = tasksList.findIndex((task) => task.id === id);
-  tasksList.splice(taskId, 1);
-
-  document.getElementById(id)?.remove();
-  console.log(id, 'id');
-  console.log('tasksParent', tasksParent);
-
-  localStorage.setItem('tasksList', JSON.stringify(tasksList));
-};
+const createTask = () => {
+  newTask = document.createElement('li');
+  checkboxInput = document.createElement('input');
+  newTask.classList.add('task')
+  newTask.setAttribute('id', task.id);
+  checkboxInput.setAttribute('type', 'checkbox');
+  newTask.appendChild(checkboxInput);
+  newTask.appendChild(document.createTextNode(task.value));
+  tasksParent.appendChild(newTask);
+}
 
 const setTaskToLocalStorage = () => {
   localStorage.setItem('tasksList', JSON.stringify(tasksList));
@@ -70,20 +61,17 @@ const getTaskFromLocalStorage = () => {
     tasksList.push(...JSON.parse(storedTasks));
     tasksList.forEach((task) => {
       const taskItem = document.createElement('li');
+      const checkbox = document.createElement('input');
+      taskItem.classList.add('task')
       taskItem.setAttribute('id', task.id);
-      taskItem.innerHTML = task.value;
+      checkbox.setAttribute('type', 'checkbox');
       console.log(task.id);
-
-      const removeTaskButton = document.createElement('button');
-      removeTaskButton.innerHTML = 'Remove task';
-      removeTaskButton.addEventListener('click', () => removeTask(task.id));
-
-      taskItem.appendChild(removeTaskButton);
+      taskItem.appendChild(checkbox);
+      // taskItem.innerHTML = task.value;
+      taskItem.appendChild(document.createTextNode(task.value));
       tasksParent.appendChild(taskItem);
     });
   }
 };
-
-document.body.appendChild(tasksParent);
 
 getTaskFromLocalStorage();
