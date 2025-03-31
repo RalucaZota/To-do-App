@@ -14,14 +14,25 @@ const updateValue = (event) => {
 input.addEventListener('change', (event) => updateValue(event));
 input.addEventListener('keypress', (event) => handleEnterKey(event));
 
+console.log(tasksList, "tasksList");
 const addTask = () => {
-  if (input.value.trim() === '') return;
+  if (input.value.trim() === "") return;
   idCounter++;
-  localStorage.setItem('idCounter', JSON.stringify(idCounter));
+  localStorage.setItem("idCounter", JSON.stringify(idCounter));
 
   task = { value: input.value, id: idCounter, checked: isChecked };
   tasksList.push(task);
-  console.log('task', task);
+  console.log("task", task);
+  console.log(tasksList, "tasksList");
+  // tasksList.filter((task) => {
+  //   console.log(task, "task");
+
+  //   if (!task.checked) {
+  //     document.querySelector(".remove-task").disabled = true;
+  //   } else {
+  //     document.querySelector(".remove-task").disabled = false;
+  //   }
+  // });
 
   setTaskToLocalStorage();
   createTask(task);
@@ -55,7 +66,6 @@ const createTask = (task) => {
 
   checkboxInput.addEventListener('change', () => {
     changeCheckBoxValue(task.id, checkboxInput);
-    console.log('cand se apeleaza?');
   });
 };
 
@@ -65,33 +75,44 @@ const setTaskToLocalStorage = () => {
 
 const getTaskFromLocalStorage = () => {
   tasksList.forEach((task) => createTask(task));
+  console.log(tasksList, "getTaskFromLocalStorage");
+  tasksList.filter((task) => {
+    console.log(task, "task");
+    if (!task.checked) {
+      document.querySelector(".remove-task").disabled = true;
+    } else {
+      document.querySelector(".remove-task").disabled = false;
+    }
+  });
 };
 
 const changeCheckBoxValue = (taskId, checkbox) => {
   console.log(tasksList);
-  console.log('task.id', taskId);
-  console.log('checkbox', checkbox);
+  console.log("task.id", taskId);
+  console.log("checkbox", checkbox);
 
   const taskIndex = tasksList.findIndex((task) => task.id === taskId);
   if (taskIndex !== -1) {
     tasksList[taskIndex].checked = checkbox.checked;
     setTaskToLocalStorage();
-    console.log(tasksList);
-    const removeTaskButton = document.createElement('button');
-    removeTaskButton.innerHTML = 'Remove task';
-    removeTaskButton.addEventListener('click', () => removeTask());
+    if (tasksList[taskIndex].checked) {
+      console.log(tasksList[taskIndex].checked);
+      document.querySelector(".remove-task").disabled = false;
+    } else {
+      document.querySelector(".remove-task").disabled = true;
+    }
   }
 };
+
 const removeTask = () => {
-  let updatedTasksList;
   tasksList.forEach((task) => {
     if (task.checked) {
       document.getElementById(task.id)?.remove();
     }
   });
-
-  updatedTasksList = tasksList.filter((task) => !task.checked);
-  localStorage.setItem('tasksList', JSON.stringify(updatedTasksList));
+  const updatedTasksList = tasksList.filter((task) => !task.checked);
+  localStorage.setItem("tasksList", JSON.stringify(updatedTasksList));
+  document.querySelector(".remove-task").disabled = true;
 };
 
 getTaskFromLocalStorage();
