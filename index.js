@@ -5,8 +5,8 @@ const tasksList = JSON.parse(localStorage.getItem('tasksList')) || [];
 let idCounter = localStorage.getItem('idCounter') ? parseInt(localStorage.getItem('idCounter')) : 0;
 let task;
 let newTask;
-let removeTaskButton;
 let isChecked = false;
+let removeButton;
 
 const updateValue = (event) => {
   input.value = event.target.value;
@@ -16,13 +16,12 @@ input.addEventListener('keypress', (event) => handleEnterKey(event));
 
 const addTask = () => {
   if (input.value.trim() === '') return;
-  idCounter++
+  idCounter++;
   localStorage.setItem('idCounter', JSON.stringify(idCounter));
 
   task = { value: input.value, id: idCounter, checked: isChecked };
   tasksList.push(task);
   console.log('task', task);
-
 
   setTaskToLocalStorage();
   createTask(task);
@@ -53,13 +52,12 @@ const createTask = (task) => {
   tasksParent.appendChild(newTask);
   console.log(task.id);
   console.log(checkboxInput, 'checkboxInput');
-  
+
   checkboxInput.addEventListener('change', () => {
-    changeCheckBoxValue(task.id, checkboxInput)
+    changeCheckBoxValue(task.id, checkboxInput);
     console.log('cand se apeleaza?');
-    
-  })
-}
+  });
+};
 
 const setTaskToLocalStorage = () => {
   localStorage.setItem('tasksList', JSON.stringify(tasksList));
@@ -73,13 +71,27 @@ const changeCheckBoxValue = (taskId, checkbox) => {
   console.log(tasksList);
   console.log('task.id', taskId);
   console.log('checkbox', checkbox);
-  
+
   const taskIndex = tasksList.findIndex((task) => task.id === taskId);
   if (taskIndex !== -1) {
     tasksList[taskIndex].checked = checkbox.checked;
     setTaskToLocalStorage();
+    console.log(tasksList);
+    const removeTaskButton = document.createElement('button');
+    removeTaskButton.innerHTML = 'Remove task';
+    removeTaskButton.addEventListener('click', () => removeTask());
   }
 };
+const removeTask = () => {
+  let updatedTasksList;
+  tasksList.forEach((task) => {
+    if (task.checked) {
+      document.getElementById(task.id)?.remove();
+    }
+  });
 
+  updatedTasksList = tasksList.filter((task) => !task.checked);
+  localStorage.setItem('tasksList', JSON.stringify(updatedTasksList));
+};
 
 getTaskFromLocalStorage();
