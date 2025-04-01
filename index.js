@@ -1,12 +1,21 @@
+// import { addTaskToTable, createRow } from './table.js';
+
 const input = document.querySelector('input');
 const addTaskButton = document.querySelector('.add-task');
 const tasksParent = document.querySelector('.tasks-parent');
-const tasksList = JSON.parse(localStorage.getItem('tasksList')) || [];
+export const tasksList = JSON.parse(localStorage.getItem('tasksList')) || [];
 let idCounter = localStorage.getItem('idCounter') ? parseInt(localStorage.getItem('idCounter')) : 0;
 let task;
 let newTask;
 let isChecked = false;
 let removeButton;
+const table = document.querySelector('.table');
+let newRow;
+let newCell;
+let newCell2;
+let newCell3;
+let taskItem;
+let taskItems = [];
 
 const updateValue = (event) => {
   input.value = event.target.value;
@@ -14,7 +23,6 @@ const updateValue = (event) => {
 input.addEventListener('change', (event) => updateValue(event));
 input.addEventListener('keypress', (event) => handleEnterKey(event));
 
-console.log(tasksList, 'tasksList');
 const addTask = () => {
   if (input.value.trim() === '') return;
   idCounter++;
@@ -22,10 +30,12 @@ const addTask = () => {
 
   task = { value: input.value, id: idCounter, checked: isChecked };
   tasksList.push(task);
+console.log('tasksList', tasksList);
 
   setTaskToLocalStorage();
   createTask(task);
   cleanInput();
+  // createRow();
 };
 
 const cleanInput = () => {
@@ -39,21 +49,33 @@ const handleEnterKey = (event) => {
 };
 
 const createTask = (task) => {
-  newTask = document.createElement('li');
-  newTask.classList.add('task');
-  newTask.setAttribute('id', task.id);
+  console.log('table', table);
+  
+  newRow = document.createElement('tr'); 
+  newCell = document.createElement('td'); 
+  newCell2 = document.createElement('td'); 
+  newCell3 = document.createElement('td'); 
+  // newRow.classList.add('task');
+  newCell.setAttribute('id', task.id);
+  console.log('newRow', newRow);
+  console.log('newCell', newCell);
+  
 
-  const checkboxInput = document.createElement('input');
-  checkboxInput.setAttribute('type', 'checkbox');
-  checkboxInput.checked = task.checked;
+  // const checkboxInput = document.createElement('input');
+  // checkboxInput.setAttribute('type', 'checkbox');
+  // checkboxInput.checked = task.checked;
 
-  newTask.appendChild(checkboxInput);
-  newTask.appendChild(document.createTextNode(task.value));
-  tasksParent.appendChild(newTask);
+  // newTask.appendChild(checkboxInput);
+  newCell.appendChild(document.createTextNode(task.value));
+  newRow.append(newCell, newCell2, newCell3);
+  // newRow.appendChild(newCell2);
+  // newRow.appendChild(newCell3);
+  table.appendChild(newRow);
+  // tasksParent.appendChild(newTask);
 
-  checkboxInput.addEventListener('change', () => {
-    changeCheckBoxValue(task.id, checkboxInput);
-  });
+  // checkboxInput.addEventListener('change', () => {
+  //   changeCheckBoxValue(task.id, checkboxInput);
+  // });
 };
 
 const setTaskToLocalStorage = () => {
@@ -90,7 +112,6 @@ const unableRemoveButton = (list) => {
   console.log(list, 'unableRemoveButton');
   
   const removeButton = document.querySelector('.remove-task');
-  if (!removeButton) return;
 
   const hasCheckedTask = list?.some(task => task.checked);
   removeButton.disabled = !hasCheckedTask;
@@ -101,3 +122,8 @@ const unableRemoveButton = (list) => {
 unableRemoveButton(tasksList);
 
 getTaskFromLocalStorage();
+
+window.addTask = addTask;
+// window.addTaskToTable = addTaskToTable;
+window.removeTask = removeTask;
+// window.createRow = createRow;
