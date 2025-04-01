@@ -83,30 +83,19 @@ const removeTask = () => {
   });
   const updatedTasksList = tasksList.filter((task) => !task.checked);
   localStorage.setItem('tasksList', JSON.stringify(updatedTasksList));
-  console.log(tasksList, 'removeTask');
-
   document.querySelector('.remove-task').disabled = true;
 };
 
 const unableRemoveButton = (list) => {
   console.log(list, 'unableRemoveButton');
+  
+  const removeButton = document.querySelector('.remove-task');
+  if (!removeButton) return;
 
-  if (!list || list.length === 0) {
-    console.log(list, 'tasksList unableRemoveButton');
-    document.querySelector('.remove-task').disabled = true;
-
-  } else if (!!list && list.length !== 0) {
-    const checkedTask = list.find((task) => task.checked);
-    console.log('exista checked tasks');
-    console.log(checkedTask, 'checkedTasks');
-
-    if (!!list && checkedTask) {
-      document.querySelector('.remove-task').disabled = false;
-    } else {
-      console.log('nu este niciun checked');
-      document.querySelector('.remove-task').disabled = true;
-    }
-  }
+  const hasCheckedTask = list?.some(task => task.checked);
+  removeButton.disabled = !hasCheckedTask;
+  
+  console.log(hasCheckedTask ? 'exista checked tasks' : 'nu este niciun checked');
 };
 
 unableRemoveButton(tasksList);
