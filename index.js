@@ -14,25 +14,14 @@ const updateValue = (event) => {
 input.addEventListener('change', (event) => updateValue(event));
 input.addEventListener('keypress', (event) => handleEnterKey(event));
 
-console.log(tasksList, "tasksList");
+console.log(tasksList, 'tasksList');
 const addTask = () => {
-  if (input.value.trim() === "") return;
+  if (input.value.trim() === '') return;
   idCounter++;
-  localStorage.setItem("idCounter", JSON.stringify(idCounter));
+  localStorage.setItem('idCounter', JSON.stringify(idCounter));
 
   task = { value: input.value, id: idCounter, checked: isChecked };
   tasksList.push(task);
-  console.log("task", task);
-  console.log(tasksList, "tasksList");
-  // tasksList.filter((task) => {
-  //   console.log(task, "task");
-
-  //   if (!task.checked) {
-  //     document.querySelector(".remove-task").disabled = true;
-  //   } else {
-  //     document.querySelector(".remove-task").disabled = false;
-  //   }
-  // });
 
   setTaskToLocalStorage();
   createTask(task);
@@ -51,7 +40,7 @@ const handleEnterKey = (event) => {
 
 const createTask = (task) => {
   newTask = document.createElement('li');
-  newTask.classList.add('task')
+  newTask.classList.add('task');
   newTask.setAttribute('id', task.id);
 
   const checkboxInput = document.createElement('input');
@@ -61,8 +50,6 @@ const createTask = (task) => {
   newTask.appendChild(checkboxInput);
   newTask.appendChild(document.createTextNode(task.value));
   tasksParent.appendChild(newTask);
-  console.log(task.id);
-  console.log(checkboxInput, 'checkboxInput');
 
   checkboxInput.addEventListener('change', () => {
     changeCheckBoxValue(task.id, checkboxInput);
@@ -75,32 +62,16 @@ const setTaskToLocalStorage = () => {
 
 const getTaskFromLocalStorage = () => {
   tasksList.forEach((task) => createTask(task));
-  console.log(tasksList, "getTaskFromLocalStorage");
-  tasksList.filter((task) => {
-    console.log(task, "task");
-    if (!task.checked) {
-      document.querySelector(".remove-task").disabled = true;
-    } else {
-      document.querySelector(".remove-task").disabled = false;
-    }
-  });
+  console.log(tasksList, 'getTaskFromLocalStorage');
 };
 
 const changeCheckBoxValue = (taskId, checkbox) => {
-  console.log(tasksList);
-  console.log("task.id", taskId);
-  console.log("checkbox", checkbox);
-
   const taskIndex = tasksList.findIndex((task) => task.id === taskId);
   if (taskIndex !== -1) {
     tasksList[taskIndex].checked = checkbox.checked;
     setTaskToLocalStorage();
-    if (tasksList[taskIndex].checked) {
-      console.log(tasksList[taskIndex].checked);
-      document.querySelector(".remove-task").disabled = false;
-    } else {
-      document.querySelector(".remove-task").disabled = true;
-    }
+    console.log(tasksList, 'changeCheckBoxValue');
+    unableRemoveButton(tasksList);
   }
 };
 
@@ -111,8 +82,33 @@ const removeTask = () => {
     }
   });
   const updatedTasksList = tasksList.filter((task) => !task.checked);
-  localStorage.setItem("tasksList", JSON.stringify(updatedTasksList));
-  document.querySelector(".remove-task").disabled = true;
+  localStorage.setItem('tasksList', JSON.stringify(updatedTasksList));
+  console.log(tasksList, 'removeTask');
+
+  document.querySelector('.remove-task').disabled = true;
 };
+
+const unableRemoveButton = (list) => {
+  console.log(list, 'unableRemoveButton');
+
+  if (!list || list.length === 0) {
+    console.log(list, 'tasksList unableRemoveButton');
+    document.querySelector('.remove-task').disabled = true;
+
+  } else if (!!list && list.length !== 0) {
+    const checkedTask = list.find((task) => task.checked);
+    console.log('exista checked tasks');
+    console.log(checkedTask, 'checkedTasks');
+
+    if (!!list && checkedTask) {
+      document.querySelector('.remove-task').disabled = false;
+    } else {
+      console.log('nu este niciun checked');
+      document.querySelector('.remove-task').disabled = true;
+    }
+  }
+};
+
+unableRemoveButton(tasksList);
 
 getTaskFromLocalStorage();
