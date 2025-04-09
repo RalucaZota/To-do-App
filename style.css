@@ -3,8 +3,6 @@ h1 {
 }
 
 .input {
-    /* display: block;
-    margin: 0 auto; */
     height: 55px;
     width: 250px;
     border: 1px solid grey;
@@ -29,14 +27,7 @@ h1 {
     background-color: rgb(251, 249, 249);
 }
 
-.tasks-parent {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 10px;
-    flex-direction: column;
-}
-
-.tasks-parent > li {
-    font-size: 30px;
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
 }

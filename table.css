@@ -17,10 +17,11 @@ table {
   
   th {
     background-color: rgb(235,235,235);
+    font-size: 32px;
   }
   
   td {
-    text-align: center;
+    font-size: 30px;
   }
   
   tr:nth-child(even) td {

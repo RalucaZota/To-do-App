@@ -9,7 +9,7 @@ let task;
 let newTask;
 let isChecked = false;
 let removeButton;
-const table = document.querySelector('.table');
+const tableBody = document.querySelector('tbody');
 let newRow;
 let newCell;
 let newCell2;
@@ -49,33 +49,31 @@ const handleEnterKey = (event) => {
 };
 
 const createTask = (task) => {
-  console.log('table', table);
+  // console.log('table', table);
   
   newRow = document.createElement('tr'); 
   newCell = document.createElement('td'); 
   newCell2 = document.createElement('td'); 
   newCell3 = document.createElement('td'); 
-  // newRow.classList.add('task');
   newCell.setAttribute('id', task.id);
   console.log('newRow', newRow);
   console.log('newCell', newCell);
   
 
-  // const checkboxInput = document.createElement('input');
-  // checkboxInput.setAttribute('type', 'checkbox');
-  // checkboxInput.checked = task.checked;
+  const checkboxInput = document.createElement('input');
+  checkboxInput.setAttribute('type', 'checkbox');
+  checkboxInput.checked = task.checked;
 
-  // newTask.appendChild(checkboxInput);
+  newCell.appendChild(checkboxInput);
   newCell.appendChild(document.createTextNode(task.value));
   newRow.append(newCell, newCell2, newCell3);
-  // newRow.appendChild(newCell2);
-  // newRow.appendChild(newCell3);
-  table.appendChild(newRow);
-  // tasksParent.appendChild(newTask);
+  console.log(tableBody);
+  
+  tableBody.append(newRow);
 
-  // checkboxInput.addEventListener('change', () => {
-  //   changeCheckBoxValue(task.id, checkboxInput);
-  // });
+  checkboxInput.addEventListener('change', () => {
+    changeCheckBoxValue(task.id, checkboxInput);
+  });
 };
 
 const setTaskToLocalStorage = () => {
@@ -100,7 +98,12 @@ const changeCheckBoxValue = (taskId, checkbox) => {
 const removeTask = () => {
   tasksList.forEach((task) => {
     if (task.checked) {
+      console.log('removeTask', task);
+      
       document.getElementById(task.id)?.remove();
+      console.log('newRow removeTask', newRow);
+      // const removedTask = tableBody.find((el) => console.log('el', el)
+      
     }
   });
   const updatedTasksList = tasksList.filter((task) => !task.checked);
