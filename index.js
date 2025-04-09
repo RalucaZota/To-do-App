@@ -49,16 +49,14 @@ const handleEnterKey = (event) => {
 };
 
 const createTask = (task) => {
-  // console.log('table', table);
-  
   newRow = document.createElement('tr'); 
   newCell = document.createElement('td'); 
   newCell2 = document.createElement('td'); 
   newCell3 = document.createElement('td'); 
   newCell.setAttribute('id', task.id);
+  newCell.setAttribute('draggable', true);
   console.log('newRow', newRow);
   console.log('newCell', newCell);
-  
 
   const checkboxInput = document.createElement('input');
   checkboxInput.setAttribute('type', 'checkbox');
@@ -67,13 +65,27 @@ const createTask = (task) => {
   newCell.appendChild(checkboxInput);
   newCell.appendChild(document.createTextNode(task.value));
   newRow.append(newCell, newCell2, newCell3);
-  console.log(tableBody);
   
   tableBody.append(newRow);
 
   checkboxInput.addEventListener('change', () => {
     changeCheckBoxValue(task.id, checkboxInput);
   });
+
+  newCell.addEventListener('dragstart', (event) => {
+    dragstartHandler(event, task.id);
+  });
+  newCell2.addEventListener('dragover', (event) => {
+    dragoverHandler(event);
+  });
+  console.log(newCell2, 'newcell2');
+  
+  newCell2.addEventListener('drop', (event) => {
+    dropHandler(event);
+  });
+  // newCell3.addEventListener('dragstart', (event) => {
+  //   dragstartHandler(event, task.id);
+  // });
 };
 
 const setTaskToLocalStorage = () => {
@@ -82,7 +94,6 @@ const setTaskToLocalStorage = () => {
 
 const getTaskFromLocalStorage = () => {
   tasksList.forEach((task) => createTask(task));
-  console.log(tasksList, 'getTaskFromLocalStorage');
 };
 
 const changeCheckBoxValue = (taskId, checkbox) => {
@@ -122,6 +133,30 @@ const unableRemoveButton = (list) => {
 unableRemoveButton(tasksList);
 
 getTaskFromLocalStorage();
+
+const dragstartHandler = (ev, id) => {
+  console.log(ev, 'ev');
+  console.log(id, 'id');
+  ev.dataTransfer.setData("text", id);
+}
+
+const dragoverHandler = (ev) => {
+  ev.preventDefault();
+  console.log('dragoverHandler');
+}
+
+const dropHandler = (ev) => {
+  ev.preventDefault();
+  const data = ev.dataTransfer.getData("text");
+  console.log('data', data);
+  console.log('ev dropHandler', ev);
+  
+  
+  newCell2.appendChild(document.getElementById(data));
+  console.log(ev.target, 'ev.target');
+  
+  console.log('dropHandler');
+}
 
 window.addTask = addTask;
 // window.addTaskToTable = addTaskToTable;
