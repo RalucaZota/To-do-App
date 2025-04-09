@@ -71,9 +71,9 @@ const createTask = (task) => {
   
   tableBody.append(newRow);
 
-  // checkboxInput.addEventListener('change', () => {
-  //   changeCheckBoxValue(task.id, checkboxInput);
-  // });
+  checkboxInput.addEventListener('change', () => {
+    changeCheckBoxValue(task.id, checkboxInput);
+  });
 };
 
 const setTaskToLocalStorage = () => {
@@ -98,12 +98,9 @@ const changeCheckBoxValue = (taskId, checkbox) => {
 const removeTask = () => {
   tasksList.forEach((task) => {
     if (task.checked) {
-      console.log('removeTask', task);
-      
-      document.getElementById(task.id)?.remove();
-      console.log('newRow removeTask', newRow);
-      // const removedTask = tableBody.find((el) => console.log('el', el)
-      
+      const cell = document.getElementById(task.id);
+      const row = cell?.closest('tr');
+      row?.remove();
     }
   });
   const updatedTasksList = tasksList.filter((task) => !task.checked);
