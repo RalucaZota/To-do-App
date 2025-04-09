@@ -71,9 +71,9 @@ const createTask = (task) => {
   
   tableBody.append(newRow);
 
-  checkboxInput.addEventListener('change', () => {
-    changeCheckBoxValue(task.id, checkboxInput);
-  });
+  // checkboxInput.addEventListener('change', () => {
+  //   changeCheckBoxValue(task.id, checkboxInput);
+  // });
 };
 
 const setTaskToLocalStorage = () => {
