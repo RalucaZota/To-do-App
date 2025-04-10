@@ -1,21 +1,10 @@
 // import { addTaskToTable, createRow } from './table.js';
 
 const input = document.querySelector('input');
-const addTaskButton = document.querySelector('.add-task');
-const tasksParent = document.querySelector('.tasks-parent');
 export const tasksList = JSON.parse(localStorage.getItem('tasksList')) || [];
 let idCounter = localStorage.getItem('idCounter') ? parseInt(localStorage.getItem('idCounter')) : 0;
-let task;
-let newTask;
 let isChecked = false;
-let removeButton;
 const tableBody = document.querySelector('tbody');
-let newRow;
-let newCell;
-let newCell2;
-let newCell3;
-let taskItem;
-let taskItems = [];
 
 const updateValue = (event) => {
   input.value = event.target.value;
@@ -28,7 +17,7 @@ const addTask = () => {
   idCounter++;
   localStorage.setItem('idCounter', JSON.stringify(idCounter));
 
-  task = { value: input.value, id: idCounter, checked: isChecked };
+  const task = { value: input.value, id: idCounter, checked: isChecked };
   tasksList.push(task);
 console.log('tasksList', tasksList);
 
@@ -49,10 +38,10 @@ const handleEnterKey = (event) => {
 };
 
 const createTask = (task) => {
-  newRow = document.createElement('tr'); 
-  newCell = document.createElement('td'); 
-  newCell2 = document.createElement('td'); 
-  newCell3 = document.createElement('td'); 
+  const newRow = document.createElement('tr'); 
+  const newCell = document.createElement('td'); 
+  const newCell2 = document.createElement('td'); 
+  const newCell3 = document.createElement('td'); 
   newCell.setAttribute('id', task.id);
   newCell.setAttribute('draggable', true);
   console.log('newRow', newRow);
@@ -82,10 +71,8 @@ const createTask = (task) => {
   
   newCell2.addEventListener('drop', (event) => {
     dropHandler(event);
+    newCell.removeChild(document.createTextNode(task.value));
   });
-  // newCell3.addEventListener('dragstart', (event) => {
-  //   dragstartHandler(event, task.id);
-  // });
 };
 
 const setTaskToLocalStorage = () => {
@@ -147,15 +134,23 @@ const dragoverHandler = (ev) => {
 
 const dropHandler = (ev) => {
   ev.preventDefault();
-  const data = ev.dataTransfer.getData("text");
-  console.log('data', data);
   console.log('ev dropHandler', ev);
   
+  const draggedTaskId = ev.dataTransfer.getData("text");
+  const draggedElement = document.getElementById(draggedTaskId);
+
+  if (!draggedElement) return;
+
+  const taskTextNode = document.createTextNode(
+    draggedElement.childNodes[1].textContent
+  );
   
-  newCell2.appendChild(document.getElementById(data));
-  console.log(ev.target, 'ev.target');
+  ev.target.innerHTML = '';
+  ev.target.appendChild(taskTextNode);
+  console.log('ev.target', ev.target);
+  console.log(taskTextNode);
   
-  console.log('dropHandler');
+  
 }
 
 window.addTask = addTask;
