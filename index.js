@@ -42,6 +42,8 @@ const createTask = (task) => {
   const newCell = document.createElement('td'); 
   const newCell2 = document.createElement('td'); 
   const newCell3 = document.createElement('td'); 
+  console.log(newCell, newCell2, newCell3);
+  
   newCell.setAttribute('id', task.id);
   newCell.setAttribute('draggable', true);
   console.log('newRow', newRow);
@@ -61,18 +63,17 @@ const createTask = (task) => {
     changeCheckBoxValue(task.id, checkboxInput);
   });
 
+  [newCell, newCell2, newCell3].forEach(cell => {
+    cell.addEventListener('dragover', dragoverHandler);
+    cell.addEventListener('drop', dropHandler);
+  });
+
   newCell.addEventListener('dragstart', (event) => {
     dragstartHandler(event, task.id);
   });
-  newCell2.addEventListener('dragover', (event) => {
-    dragoverHandler(event);
-  });
-  console.log(newCell2, 'newcell2');
-  
-  newCell2.addEventListener('drop', (event) => {
-    dropHandler(event);
-    newCell.removeChild(document.createTextNode(task.value));
-  });
+
+  newRow.append(newCell, newCell2, newCell3);
+  tableBody.append(newRow);
 };
 
 const setTaskToLocalStorage = () => {
@@ -121,36 +122,36 @@ unableRemoveButton(tasksList);
 
 getTaskFromLocalStorage();
 
-const dragstartHandler = (ev, id) => {
+function dragstartHandler(ev, id) {
   console.log(ev, 'ev');
   console.log(id, 'id');
-  ev.dataTransfer.setData("text", id);
-}
+  const draggedCell = document.getElementById(id);
+  ev.dataTransfer.setData("draggedHTML", draggedCell.innerHTML);
+  ev.dataTransfer.setData("taskId", id);
+};
 
-const dragoverHandler = (ev) => {
+function dragoverHandler (ev) {
   ev.preventDefault();
   console.log('dragoverHandler');
 }
 
-const dropHandler = (ev) => {
+function dropHandler (ev){
   ev.preventDefault();
   console.log('ev dropHandler', ev);
   
-  const draggedTaskId = ev.dataTransfer.getData("text");
-  const draggedElement = document.getElementById(draggedTaskId);
+  const droppedHTML = ev.dataTransfer.getData("draggedHTML");
+  const sourceId = ev.dataTransfer.getData("taskId");
+  const sourceCell = document.getElementById(sourceId);
+  
+  sourceCell.innerHTML = '';
+  ev.currentTarget.innerHTML = droppedHTML;
 
-  if (!draggedElement) return;
+  ev.currentTarget.setAttribute('id', sourceId);
+  ev.currentTarget.setAttribute('draggable', true);
 
-  const taskTextNode = document.createTextNode(
-    draggedElement.childNodes[1].textContent
-  );
-  
-  ev.target.innerHTML = '';
-  ev.target.appendChild(taskTextNode);
-  console.log('ev.target', ev.target);
-  console.log(taskTextNode);
-  
-  
+  ev.currentTarget.addEventListener('dragstart', (event) => {
+    dragstartHandler(event, sourceId);
+  });
 }
 
 window.addTask = addTask;
